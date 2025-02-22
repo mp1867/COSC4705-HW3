@@ -2,7 +2,9 @@ import base64
 from Crypto.Util.Padding import pad, unpad
 from Crypto.Cipher import AES
 import imexceptions
-
+import os
+import hmac  # Import hmac module for HMAC functionality
+from Crypto.Hash import SHA256  # Import SHA-256 hash function from PyCryptodome
 
 class EncryptedBlob:
 
@@ -87,7 +89,7 @@ class EncryptedBlob:
         computed_mac = hmac_obj.digest()
         
         # this is the raising exceptions part I commented above from OG code
-        if not hmac.compare_digest(received_mac, computed_mac):
+        if not hmac.compare_digest(mac, computed_mac):
             raise imexceptions.FailedAuthenticationError("MAC verification failed!")
 
         # Decrypt using AES-CBC
