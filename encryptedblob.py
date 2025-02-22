@@ -5,6 +5,7 @@ import imexceptions
 import os
 import hmac  # Import hmac module for HMAC functionality
 from Crypto.Hash import SHA256  # Import SHA-256 hash function from PyCryptodome
+from client import hashKeys
 
 class EncryptedBlob:
 
@@ -28,8 +29,10 @@ class EncryptedBlob:
         # confkey AND authkey
 
         # first, we convert the passed keys to byte arrays using the bytes function
-        confkey_bytes = bytes(confkey, 'ascii')
-        authkey_bytes = bytes(authkey, 'ascii')
+        # assuming the keys are passed in as strings
+        
+        # call haskKeys to get the hashkeys
+        hashedConfkey, hashedAuthkey = hashKeys(confkey, authkey)
 
         # now, we generate some random 16-byte IV for the AES in CBC mode stuff
         iv = os.urandom(16)
@@ -38,13 +41,13 @@ class EncryptedBlob:
         plaintextPadded = pad(bytes(plaintext,'utf-8'),16) 
 
         # now we create an AES cipher object that will perform encryption using CBC mode
-        cipher = AES.new(confkey_bytes, AES.MODE_CBC, iv)
+        cipher = AES.new(hashedConfkey, AES.MODE_CBC, iv)
 
         # now we are actually encryppting the padded plaintext using AES-CBC
         ciphertext = cipher.encrypt(plaintextPadded)
 
         # Compute HMAC-SHA256 for authentication
-        hmac_obj = hmac.new(authkey_bytes, iv + ciphertext, SHA256)
+        hmac_obj = hmac.new(hashedAuthkey, iv + ciphertext, SHA256)
         mac = hmac_obj.digest()
 
         # DON'T CHANGE THE BELOW.
