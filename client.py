@@ -58,10 +58,18 @@ def parseArgs():
 #
 # note that you MUST convert confkey and authkey to ascii encoding,
 # e.g., confkey_as_bytes = bytes(confkey,'ascii')
+
 def hashKeys( confkey, authkey):
-    # insert code to compute two hashes here
-    confkeyHash = bytes([0x01,0x02])
-    authkeyHash = bytes([0x99,0x22,0x33])
+    # converting the two keys to ASCII-encoded byte arrays
+    confkey_as_bytes = bytes(confkey, 'ascii')
+    authkey_as_bytes = bytes(authkey, 'ascii')
+
+    # after we have the two ascii encoded byte arrays, we can use those to computer the SHA-256 hashes
+    confkeyHash = SHA256.new(confkey_as_bytes).digest()
+    authkeyHash = SHA256.new(authkey_as_bytes).digest()
+    # the new function creates the SHA-256 hash objects from that Pycryptodome library
+    # digest finalizes the hash comp and returns as a raw byte array
+
     return confkeyHash,authkeyHash
 
 
