@@ -122,6 +122,7 @@ def main():
             msg = EncryptedIMMessage(
                 nickname=args.nickname, 
                 plaintext=keyboardInput)
+            
             packedSize, jsonData = msg.serialize(hashedConfkey,hashedAuthkey)
             s.send(packedSize)
             log.debug(f"sending raw JSON: {jsonData}")
