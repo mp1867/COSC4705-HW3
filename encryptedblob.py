@@ -88,7 +88,7 @@ class EncryptedBlob:
         if computed_mac != mac:
             raise imexceptions.FailedAuthenticationError("MAC verification failed!")
 
-        # Step 4: Decrypt ciphertext using AES-256-CBC
+        # Decrypt the ciphertext using AES-256-CBC
         cipher = AES.new(confkey, AES.MODE_CBC, iv)
         try:
             plaintext_padded = cipher.decrypt(ciphertext)  # Decrypt
@@ -96,7 +96,7 @@ class EncryptedBlob:
         except ValueError:  # Raised if padding is incorrect (decryption failure)
             raise imexceptions.FailedDecryptionError("Decryption failed or invalid padding!")
 
-        # Step 5: Return plaintext as a UTF-8 string
+        # Return plaintext as a UTF-8 string
         return plaintext.decode("utf-8")
     
         #raise imexceptions.FailedAuthenticationError("ruh oh!")
